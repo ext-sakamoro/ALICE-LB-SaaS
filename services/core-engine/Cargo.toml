@@ -1,10 +1,8 @@
 [package]
-name = "alice-lb-core"
+name = "lb-engine"
 version = "0.1.0"
 edition = "2021"
 license = "AGPL-3.0-or-later"
-description = "ALICE LB SaaS — L4/L7 load balancer core engine"
-
 [dependencies]
 axum = { version = "0.7", features = ["macros"] }
 tokio = { version = "1", features = ["full"] }
@@ -14,3 +12,9 @@ tower-http = { version = "0.6", features = ["cors", "trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1", features = ["v4"] }
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"

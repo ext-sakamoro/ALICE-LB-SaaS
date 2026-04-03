@@ -1,0 +1,27 @@
+name: ALICE LB CI
+on:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+jobs:
+  test-rust:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [core-engine, api-gateway]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: services/${{ matrix.service }}
+      - run: cd services/${{ matrix.service }} && cargo check
+      - run: cd services/${{ matrix.service }} && cargo clippy -- -D warnings
+      - run: cd services/${{ matrix.service }} && cargo test
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: cd frontend && npm ci || npm install
+      - run: cd frontend && npm run type-check

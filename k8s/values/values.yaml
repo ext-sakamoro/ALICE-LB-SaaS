@@ -1,0 +1,19 @@
+global:
+  domain: alice-lb.alice-platform.com
+frontend:
+  replicas: 2
+  image: alice-lb/frontend:latest
+  resources: { requests: { cpu: 100m, memory: 128Mi }, limits: { cpu: 500m, memory: 512Mi } }
+apiGateway:
+  replicas: 2
+  image: alice-lb/api-gateway:latest
+  resources: { requests: { cpu: 200m, memory: 256Mi }, limits: { cpu: 1000m, memory: 1Gi } }
+coreEngine:
+  replicas: 2
+  image: alice-lb/core-engine:latest
+  resources: { requests: { cpu: 500m, memory: 512Mi }, limits: { cpu: 2000m, memory: 2Gi } }
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 20
+  targetCPUUtilization: 70

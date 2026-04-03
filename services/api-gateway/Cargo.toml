@@ -1,10 +1,8 @@
 [package]
-name = "alice-lb-gateway"
+name = "api-gateway"
 version = "0.1.0"
 edition = "2021"
 license = "AGPL-3.0-or-later"
-description = "ALICE LB SaaS — API gateway"
-
 [dependencies]
 axum = { version = "0.7", features = ["macros"] }
 tokio = { version = "1", features = ["full"] }
@@ -17,3 +15,10 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 reqwest = { version = "0.12", features = ["json"] }
 jsonwebtoken = "9"
 dashmap = "6"
+uuid = { version = "1", features = ["v4"] }
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"

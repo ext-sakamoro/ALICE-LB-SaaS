@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  frontend:
+    build: { context: ., dockerfile: docker/Dockerfile.frontend }
+    ports: ["3000:3000"]
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_WORKER_URL=http://localhost:8080
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+    depends_on: [api-gateway]
+    networks: [alice-lb-net]
+  api-gateway:
+    build: { context: ., dockerfile: docker/Dockerfile.api-gateway }
+    ports: ["8080:8080"]
+    environment:
+      - CORE_ENGINE_URL=http://core-engine:8081
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=http://frontend:3000
+    depends_on: [core-engine]
+    networks: [alice-lb-net]
+  core-engine:
+    build: { context: ., dockerfile: docker/Dockerfile.core-engine }
+    ports: ["8081:8081"]
+    networks: [alice-lb-net]
+volumes: {}
+networks: { alice-lb-net: { driver: bridge } }

@@ -1,0 +1,9 @@
+FROM rust:1.83-slim AS builder
+WORKDIR /app
+COPY services/core-engine/ ./
+RUN cargo build --release
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /app/target/release/lb-engine /usr/local/bin/core-engine
+EXPOSE 8081
+CMD ["core-engine"]
