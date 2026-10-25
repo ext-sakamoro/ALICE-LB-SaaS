@@ -62,7 +62,7 @@ struct Err {
 }
 
 #[derive(Serialize)]
-struct LicenseInfo { license: String, source_code: String, notice: String }
+struct LicenseInfo { license: String }
 
 #[derive(Deserialize, Serialize, Clone)]
 struct Claims {
@@ -155,12 +155,8 @@ async fn health(State(s): State<Arc<AppState>>) -> Json<Health> {
 
 async fn license_handler() -> (HeaderMap, Json<LicenseInfo>) {
     let mut h = HeaderMap::new();
-    h.insert("X-License", "AGPL-3.0-or-later".parse().unwrap());
-    (h, Json(LicenseInfo {
-        license: "AGPL-3.0-or-later".into(),
-        source_code: "https://github.com/ext-sakamoro/ALICE-LB-SaaS".into(),
-        notice: "SaaS operators must publish complete service source code under AGPL-3.0.".into(),
-    }))
+    h.insert("X-License", "LicenseRef-Proprietary".parse().unwrap());
+    (h, Json(LicenseInfo { license: "LicenseRef-Proprietary".into() }))
 }
 
 // ---------------------------------------------------------------------------
